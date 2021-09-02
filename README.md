@@ -56,7 +56,7 @@ If you encounter any issues using **CNM**, please use the repository's issue tra
 
 ## Reference
 
-TODO: add citeable reference
+[D. Fernex, B. R. Noack, and R. Semaan, "Cluster-based network modeling—From snapshots to complex dynamical systems," Sci. Adv. 7, eabf5006 (2021)](https://doi.org/10.1126/sciadv.abf5006)
 
 ## License
 
