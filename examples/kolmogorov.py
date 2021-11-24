@@ -36,7 +36,7 @@ def run_kolmogorov():
     K = 200 # Number of clusters
     L = 24 # Model order
 
-    # Create the Lorenz data
+    # Load the Kolmogorov dataset
     case_data = np.load('data/kolmogorov.npz')
     data, dt = case_data['data'], case_data['dt']
     t = np.arange(data.shape[0]) * dt
@@ -45,7 +45,7 @@ def run_kolmogorov():
     # ----------
     cluster_config = {
             'data': data,
-            'cluster_algo': KMeans(n_clusters=K,max_iter=300,n_init=10,n_jobs=-1),
+            'cluster_algo': KMeans(n_clusters=K,max_iter=300,n_init=10),
             'dataset': 'kolmogorov',
             }
 

@@ -35,7 +35,7 @@ def run_boundary_layer():
     K = 50 # Number of clusters
     L = 3 # Model order
 
-    # Create the Lorenz data
+    # Load the boundary layer data-set
     case_data = np.load('data/boundary_layer_l100_t120_a60.npz')
     data, dt = case_data['data'], case_data['dt']
     t = np.arange(data.shape[0]) * dt
