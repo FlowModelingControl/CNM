@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2021 Paolo Olivucci.
 # Copyright (c) 2020 Daniel Fernex.
 # Copyright (c) 2020 Bernd R. Noack.
 # Copyright (c) 2020 Richard Semaan.
