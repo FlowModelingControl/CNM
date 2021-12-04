@@ -25,19 +25,19 @@ import sys
 sys.path.insert(0,'../')
 from cnm import Clustering, TransitionProperties, Propagation
 import numpy as np
-from helper import create_roessler_data
-from sklearn.cluster import KMeans
 
-def run_roessler():
+def run_vanderpol():
 
+    from helper import create_vanderpol_data
+    from sklearn.cluster import KMeans
 
     # CNM parameters:
     # ---------------
-    K = 100 # Number of clusters
-    L = 2 # Model order
+    K = 30 # Number of clusters
+    L = 3 # Model order
 
-    # Create the Roessler data
-    data, dt = create_roessler_data()
+    # Generate Van der Pol data:
+    data, dt = create_vanderpol_data()
     t = np.arange(data.shape[0]) * dt
 
     # Clustering
@@ -45,7 +45,7 @@ def run_roessler():
     cluster_config = {
             'data': data,
             'cluster_algo': KMeans(n_clusters=K,max_iter=300,n_init=10),
-            'dataset': 'roessler',
+            'dataset': 'vanderpol',
             }
 
     clustering = Clustering(**cluster_config)
@@ -67,12 +67,12 @@ def run_roessler():
             'transition_properties': transition_properties,
             }
 
-    ic = 0 # Index of the centroid to start in
-    t_total = 500
-    dt_hat = dt # To spline-interpolate the centroid-to-centroid trajectory
+    initial_centroid = 0 # Index of the centroid to start in
+    t_total = 950
+    dt_hat = dt      # To spline-interpolate the centroid-to-centroid trajectory
 
     propagation = Propagation(**propagation_config)
-    t_hat, x_hat = propagation.run(t_total,ic,dt_hat)
+    t_hat, x_hat = propagation.run(t_total,initial_centroid,dt_hat)
 
     # Plot the results
     # ----------------
@@ -80,21 +80,22 @@ def run_roessler():
                         plot_autocorrelation)
 
     # phase space
-    plot_phase_space(data,clustering.centroids,clustering.labels)
+    n_dim = data.shape[1]
+    plot_phase_space(data,clustering.centroids,clustering.labels,n_dim=n_dim)
 
     # time series
-    time_range = (0,100)
-    plot_label = ['x','y','z']
-    plot_time_series(t,data,t_hat,x_hat,time_range,plot_label)
+    time_range = (45,60)
+    n_dim = 1
+    plot_label = ['x']
+    plot_time_series(t,data,t_hat,x_hat,time_range,plot_label,n_dim)
 
     # cluster probability distribution
     plot_cpd(data,x_hat)
 
     # autocorrelation function
-    time_blocks = 100
-    time_range = [0,80]
-    method = 'dot'
-    plot_autocorrelation(t,data,t_hat,x_hat,time_blocks,time_range,method=method)
+    time_blocks = 40
+    time_range = (-0.5,time_blocks)
+    plot_autocorrelation(t,data,t_hat,x_hat,time_blocks,time_range)
 
 if __name__== '__main__':
-    run_roessler()
+    run_vanderpol()

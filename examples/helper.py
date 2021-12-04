@@ -320,7 +320,7 @@ def plot_cpd(x,x_hat):
     # Re-cluster original and CNM data with 10 clusters only for clarity
     from sklearn.cluster import KMeans
     K = 10
-    kmeans = KMeans(n_clusters=K,max_iter=300,n_init=10,n_jobs=-1)
+    kmeans = KMeans(n_clusters=K,max_iter=300,n_init=10)
     kmeans.fit(x)
     labels = kmeans.labels_
 
@@ -603,17 +603,17 @@ def create_lorenz_data():
     return data[points_to_remove:,:], dt
 
 def create_roessler_data():
-    """Create the Lorenz data"""
+    """Create the Roessler data"""
 
 
-    # Lorenz settings
+    # Roessler settings
     a = 0.1
     b = 0.1
     c = 14
     x0,y0,z0 = (1,1,1) # Initial conditions
     np.random.seed(0)
 
-    # Lorenz system
+    # Roessler system
     def Rossler(t,q,a,b,c):
         return [
                 -q[1] - q[2],
@@ -637,3 +637,54 @@ def create_roessler_data():
 
     return data, t[1]-t[0]
 
+
+def create_vanderpol_data() -> tuple:
+    """Generates Van der Pol data.
+
+    Returns
+    -------
+    Tuple (data, dt). data is a ndarray containing the time-resolved data and 
+    dt is the float time-step value.
+    """
+
+    # Van der Pol settings
+    mu = 3.0                     # Van der Pol parameter "mu" 
+    initial_conditions = [1,1]   # Initial conditions x0, y0
+    np.random.seed(0)
+
+
+    def vanderpol(t: float, q: list, mu: float) -> list:
+        """Evaluates the Van der Pol oscillator equations.
+
+        Parameters
+        ----------
+        t:  time.
+        q:  list containing the variables [x, y].
+        mu: dissipation parameter.
+
+        Returns
+        -------
+        List containing the time derivatives [x', y'].
+        """
+        return  [
+                q[1],                                   # x' = y
+                mu * ( 1 - q[0]*q[0] ) * q[1] - q[0],   # y' = mu*(1-x^2)*y - x
+                ]
+
+    # Numerical settings
+    dt = 0.01             # Time step
+    N  = 50000            # Total number of steps
+    n_start = 3850        # Number of points to neglect at the beginning (to
+                          # remove the transient phase before the regular
+                          # oscillations)
+    N += n_start
+    t = np.arange(N) * dt # Time vector
+
+    # Integrate the ode
+    solution = solve_ivp(fun=lambda t, y: vanderpol(t, y, mu), 
+                         t_span = [0,t[-1]], 
+                         y0 = initial_conditions,
+                         t_eval=t)
+    data = solution.y[:,n_start:].T
+
+    return data, t[1]-t[0]
